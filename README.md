@@ -150,18 +150,18 @@ ExpressApp : +use(middleware)
 ExpressApp : +listen(port)
 
 class TasksRouter
-TasksRouter : +POST /api/tasks
-TasksRouter : +GET /api/tasks
-TasksRouter : +GET /api/tasks/:id
-TasksRouter : +PUT /api/tasks/:id
-TasksRouter : +DELETE /api/tasks/:id
+TasksRouter : +postTasks()
+TasksRouter : +getTasks()
+TasksRouter : +getTaskById(id)
+TasksRouter : +updateTask(id)
+TasksRouter : +deleteTask(id)
 
 class HealthEndpoint
-HealthEndpoint : +GET /health
+HealthEndpoint : +getHealth()
 
 class StaticFrontend
-StaticFrontend : +index.html
-StaticFrontend : +app.js
+StaticFrontend : +indexHtml
+StaticFrontend : +appJs
 
 class IValidation
 <<interface>> IValidation
