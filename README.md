@@ -145,55 +145,49 @@ git push -u origin main
 classDiagram
 direction TB
 
-class ExpressApp {
-  + use(middleware)
-  + listen(port)
-}
+class ExpressApp
+ExpressApp : +use(middleware)
+ExpressApp : +listen(port)
 
-class TasksRouter {
-  + POST /api/tasks
-  + GET /api/tasks
-  + GET /api/tasks/:id
-  + PUT /api/tasks/:id
-  + DELETE /api/tasks/:id
-}
+class TasksRouter
+TasksRouter : +POST /api/tasks
+TasksRouter : +GET /api/tasks
+TasksRouter : +GET /api/tasks/:id
+TasksRouter : +PUT /api/tasks/:id
+TasksRouter : +DELETE /api/tasks/:id
 
-class HealthEndpoint {
-  + GET /health
-}
+class HealthEndpoint
+HealthEndpoint : +GET /health
 
-class StaticFrontend {
-  + index.html
-  + app.js
-}
+class StaticFrontend
+StaticFrontend : +index.html
+StaticFrontend : +app.js
 
-interface IValidation {
-  + run(req) Result
-}
+class IValidation
+<<interface>> IValidation
+IValidation : +run(req)
 
-interface IErrorHandling {
-  + handle(err, req, res)
-}
+class IErrorHandling
+<<interface>> IErrorHandling
+IErrorHandling : +handle(err, req, res)
 
-interface IDbConnectivity {
-  + isConnected() boolean
-}
+class IDbConnectivity
+<<interface>> IDbConnectivity
+IDbConnectivity : +isConnected()
 
 class ValidationMiddleware
 class ErrorHandler
 class RequireDb
 
-class TaskModel {
-  + title: String
-  + description: String
-  + completed: Boolean
-  + dueDate: Date
-}
+class TaskModel
+TaskModel : +String title
+TaskModel : +String description
+TaskModel : +Boolean completed
+TaskModel : +Date dueDate
 
-class Mongoose {
-  + connect(uri)
-  + disconnect()
-}
+class Mongoose
+Mongoose : +connect(uri)
+Mongoose : +disconnect()
 
 class MongoDB
 class Helmet
