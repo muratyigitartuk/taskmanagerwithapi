@@ -139,3 +139,119 @@ git remote add origin <YOUR_REMOTE_URL>
 git push -u origin main
 ```
 
+## Architecture Diagram
+
+```mermaid
+classDiagram
+direction TB
+
+class ExpressApp {
+  + use(middleware)
+  + listen(port)
+}
+
+class TasksRouter {
+  + POST /api/tasks
+  + GET /api/tasks
+  + GET /api/tasks/:id
+  + PUT /api/tasks/:id
+  + DELETE /api/tasks/:id
+}
+
+class HealthEndpoint {
+  + GET /health
+}
+
+class StaticFrontend {
+  + index.html
+  + app.js
+}
+
+interface IValidation {
+  + run(req) Result
+}
+
+interface IErrorHandling {
+  + handle(err, req, res)
+}
+
+interface IDbConnectivity {
+  + isConnected() boolean
+}
+
+class ValidationMiddleware
+class ErrorHandler
+class RequireDb
+
+class TaskModel {
+  + title: String
+  + description: String
+  + completed: Boolean
+  + dueDate: Date
+}
+
+class Mongoose {
+  + connect(uri)
+  + disconnect()
+}
+
+class MongoDB
+class Helmet
+class CORS
+class JSONParser
+
+ExpressApp --> TasksRouter : mounts /api/tasks
+ExpressApp --> HealthEndpoint : health
+ExpressApp --> StaticFrontend : serves /public
+
+TasksRouter --> ValidationMiddleware : uses
+TasksRouter --> ErrorHandler : propagates errors
+TasksRouter --> RequireDb : guards
+TasksRouter --> TaskModel : CRUD
+
+TaskModel --> Mongoose : ODM
+Mongoose --> MongoDB : connection
+
+ValidationMiddleware ..|> IValidation
+ErrorHandler ..|> IErrorHandling
+RequireDb ..|> IDbConnectivity
+
+ExpressApp ..> Helmet : security
+ExpressApp ..> CORS : cors
+ExpressApp ..> JSONParser : json
+```
+
+## Request Flow (POST /api/tasks)
+
+```mermaid
+sequenceDiagram
+autonumber
+participant UI as Frontend (Browser)
+participant Router as Express Router (/api/tasks)
+participant Val as ValidationMiddleware
+participant Guard as RequireDb
+participant Handler as Route Handler
+participant Model as TaskModel
+participant DB as MongoDB
+
+UI->>Router: POST /api/tasks { title, description, dueDate, completed }
+Router->>Val: Validate body
+Val-->>Router: ok | errors
+alt Validation errors
+  Router-->>UI: 422 { error: message, details }
+else Valid
+  Router->>Guard: Check DB connectivity
+  Guard-->>Router: connected | 503
+  alt DB not connected
+    Router-->>UI: 503 { error: "Database not connected" }
+  else Connected
+    Router->>Handler: Create task
+    Handler->>Model: Task.create(payload)
+    Model->>DB: Insert document
+    DB-->>Model: Created doc
+    Model-->>Handler: Task
+    Handler-->>Router: 201 { data: Task }
+    Router-->>UI: 201 { data: Task }
+  end
+end
+```
