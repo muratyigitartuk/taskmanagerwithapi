@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TMR Tasks</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Task Manager with RESTAPI</h1>
+      <section class="create">
+        <form id="create-form">
+          <input id="title" type="text" placeholder="Title" required />
+          <input id="description" type="text" placeholder="Description" />
+          <input id="dueDate" type="date" />
+          <button type="submit">Add</button>
+        </form>
+        <div id="create-error" class="error"></div>
+      </section>
+      <section>
+        <ul id="tasks"></ul>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
